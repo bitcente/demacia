@@ -1,4 +1,4 @@
-.layerIntro {
+.screenIntro {
     position: absolute;
     top: 0;
     left: 0;
@@ -12,11 +12,11 @@
     color: var(--white);
 }
 
-.layerIntro h1 {
+.screenIntro h1 {
     overflow: hidden;
 }
 
-.layerIntro p {
+.screenIntro p {
     overflow: hidden;
     width: 700px;
     max-width: calc(100% - 60px);
@@ -24,13 +24,13 @@
     text-align: center;
 }
 
-.layerIntro .hr {
+.screenIntro .hr {
     width: 500px;
     max-width: calc(100% - 60px);
     margin-bottom: 15px;
 }
 
-.layerIntro h5 {
+.screenIntro h5 {
     visibility: hidden;
     position: absolute;
     margin: 0;
@@ -40,7 +40,7 @@
     color: var(--gold);
 }
 
-.layerIntro h5::before, .layerIntro h5::after {
+.screenIntro h5::before, .screenIntro h5::after {
     content: '';
     background-image: url('/assets/decorator-left.png');
     background-repeat: no-repeat;
@@ -50,11 +50,11 @@
     width: 1.75em;
     height: 1.5em;
 }
-.layerIntro h5::before {
+.screenIntro h5::before {
     background-image: url('/assets/decorator-left.png');
     left: -2.5em;
 }
-.layerIntro h5::after {
+.screenIntro h5::after {
     background-image: url('/assets/decorator-right.png');
     right: -2.5em;
 }

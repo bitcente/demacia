@@ -1,55 +1,55 @@
 import gsap from 'gsap';
-import './layerIntro.css';
+import './screenIntro.css';
 import { SplitText } from 'gsap/all';
 
 gsap.registerPlugin(SplitText);
 
 export class LayerIntro {
-    layerIntroElement: HTMLDivElement | undefined = undefined;
+    screenIntroElement: HTMLDivElement | undefined = undefined;
 
     constructor({ title, description }: { title: string; description: string }) {
-        // Remove layerIntro component if exists already
-        const oldLayerIntro = document.body.querySelector('.layerIntro');
+        // Remove screenIntro component if exists already
+        const oldLayerIntro = document.body.querySelector('.screenIntro');
         if (oldLayerIntro) oldLayerIntro.remove();
 
-        // Create layerIntro with input title and description
-        this.layerIntroElement = document.createElement('div');
-        console.log(this.layerIntroElement);
+        // Create screenIntro with input title and description
+        this.screenIntroElement = document.createElement('div');
+        console.log(this.screenIntroElement);
         
-        this.layerIntroElement.classList.add('layerIntro');
-        this.layerIntroElement.addEventListener('click', this.close.bind(this), false);
+        this.screenIntroElement.classList.add('screenIntro');
+        this.screenIntroElement.addEventListener('click', this.close.bind(this), false);
 
         // TITLE
         const titleElement = document.createElement('h1');
         titleElement.innerText = title;
-        this.layerIntroElement.appendChild(titleElement);
+        this.screenIntroElement.appendChild(titleElement);
 
         // HR
         const hrElement = document.createElement('img');
         hrElement.src = '/assets/decorator-hr-lg.png';
         hrElement.classList.add('hr');
-        this.layerIntroElement.appendChild(hrElement);
+        this.screenIntroElement.appendChild(hrElement);
 
         // DESCRIPTION
         const descriptionElement = document.createElement('p');
         descriptionElement.innerText = description;
-        this.layerIntroElement.appendChild(descriptionElement);
+        this.screenIntroElement.appendChild(descriptionElement);
 
-        document.body.appendChild(this.layerIntroElement);
+        document.body.appendChild(this.screenIntroElement);
 
         // Animation
-        gsap.to(this.layerIntroElement, {
+        gsap.to(this.screenIntroElement, {
             backgroundColor: 'rgb(0, 0, 0, .75)',
             duration: 2
         });
 
         const tl = gsap.timeline({
             onComplete: () => {
-                if (!this.layerIntroElement) return;
+                if (!this.screenIntroElement) return;
                 // CLICK ANYWHERE SIGN
                 const clickAnywhereSignElement = document.createElement('h5');
                 clickAnywhereSignElement.innerText = 'CLICK ANYWHERE TO CONTINUE';
-                this.layerIntroElement.appendChild(clickAnywhereSignElement);
+                this.screenIntroElement.appendChild(clickAnywhereSignElement);
                 gsap.to(clickAnywhereSignElement, {
                     autoAlpha: 1,
                     delay:  1,
@@ -84,17 +84,17 @@ export class LayerIntro {
     }
 
     close() {
-        console.log("JEJE", this.layerIntroElement);
+        console.log("JEJE", this.screenIntroElement);
         
-        // Remove layerIntro component if exists already
-        if (!this.layerIntroElement) return;
+        // Remove screenIntro component if exists already
+        if (!this.screenIntroElement) return;
 
-        this.layerIntroElement.addEventListener('click', this.close.bind(this), false);
-        gsap.to(this.layerIntroElement, {
+        this.screenIntroElement.addEventListener('click', this.close.bind(this), false);
+        gsap.to(this.screenIntroElement, {
             opacity: 0,
             duration: 1,
             onComplete: () => {
-                this.layerIntroElement && this.layerIntroElement.remove();
+                this.screenIntroElement && this.screenIntroElement.remove();
             }
         })
     }

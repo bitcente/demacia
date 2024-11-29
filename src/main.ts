@@ -3,7 +3,7 @@ import { Layer, screens } from './layers';
 import './style.css'
 import * as THREE from 'three';
 import { smokeFragmentShader, smokeVertexShader } from './shaders/smoke';
-import { LayerIntro } from './UiComponents/layerIntro';
+import { LayerIntro } from './UiComponents/screenIntro';
 
 // GLOBAL VARIABLES
 let width = window.innerWidth;
@@ -87,7 +87,7 @@ layers.forEach((layer, index) => {
 scene.add(sceneGroup);
 
 // UI INTRO
-const layerIntro = new LayerIntro({ title: screen.title, description: screen.description });
+const screenIntro = new LayerIntro({ title: screen.title, description: screen.description });
 
 // CAMERA
 let aspectRatio = width / height;
