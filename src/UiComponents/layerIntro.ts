@@ -5,40 +5,58 @@ import { SplitText } from 'gsap/all';
 gsap.registerPlugin(SplitText);
 
 export class LayerIntro {
+    layerIntroElement: HTMLDivElement | undefined = undefined;
+
     constructor({ title, description }: { title: string; description: string }) {
         // Remove layerIntro component if exists already
         const oldLayerIntro = document.body.querySelector('.layerIntro');
         if (oldLayerIntro) oldLayerIntro.remove();
 
         // Create layerIntro with input title and description
-        const layerIntroElement = document.createElement('div');
-        layerIntroElement.classList.add('layerIntro');
+        this.layerIntroElement = document.createElement('div');
+        console.log(this.layerIntroElement);
+        
+        this.layerIntroElement.classList.add('layerIntro');
+        this.layerIntroElement.addEventListener('click', this.close.bind(this), false);
 
         // TITLE
         const titleElement = document.createElement('h1');
         titleElement.innerText = title;
-        layerIntroElement.appendChild(titleElement);
+        this.layerIntroElement.appendChild(titleElement);
 
         // HR
         const hrElement = document.createElement('img');
         hrElement.src = '/assets/decorator-hr-lg.png';
         hrElement.classList.add('hr');
-        layerIntroElement.appendChild(hrElement);
+        this.layerIntroElement.appendChild(hrElement);
 
         // DESCRIPTION
         const descriptionElement = document.createElement('p');
         descriptionElement.innerText = description;
-        layerIntroElement.appendChild(descriptionElement);
+        this.layerIntroElement.appendChild(descriptionElement);
 
-        document.body.appendChild(layerIntroElement);
+        document.body.appendChild(this.layerIntroElement);
 
         // Animation
-        gsap.to(layerIntroElement, {
+        gsap.to(this.layerIntroElement, {
             backgroundColor: 'rgb(0, 0, 0, .75)',
             duration: 2
         });
 
-        const tl = gsap.timeline();
+        const tl = gsap.timeline({
+            onComplete: () => {
+                if (!this.layerIntroElement) return;
+                // CLICK ANYWHERE SIGN
+                const clickAnywhereSignElement = document.createElement('h5');
+                clickAnywhereSignElement.innerText = 'CLICK ANYWHERE TO CONTINUE';
+                this.layerIntroElement.appendChild(clickAnywhereSignElement);
+                gsap.to(clickAnywhereSignElement, {
+                    autoAlpha: 1,
+                    delay:  1,
+                    duration: 1
+                })
+            }
+        });
 
         const titleSplitText = new SplitText(titleElement, { type: "words,chars" }), titleChars = titleSplitText.chars;
         tl.from(titleChars, {
@@ -66,8 +84,18 @@ export class LayerIntro {
     }
 
     close() {
+        console.log("JEJE", this.layerIntroElement);
+        
         // Remove layerIntro component if exists already
-        const oldLayerIntro = document.body.querySelector('.layerIntro');
-        if (oldLayerIntro) oldLayerIntro.remove();
+        if (!this.layerIntroElement) return;
+
+        this.layerIntroElement.addEventListener('click', this.close.bind(this), false);
+        gsap.to(this.layerIntroElement, {
+            opacity: 0,
+            duration: 1,
+            onComplete: () => {
+                this.layerIntroElement && this.layerIntroElement.remove();
+            }
+        })
     }
 }

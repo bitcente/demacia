@@ -1,5 +1,5 @@
 import { objectFragmentShader, objectVertexShader } from './shaders/object';
-import { Layer, scenes } from './layers';
+import { Layer, screens } from './layers';
 import './style.css'
 import * as THREE from 'three';
 import { smokeFragmentShader, smokeVertexShader } from './shaders/smoke';
@@ -25,8 +25,9 @@ const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
 
 // LAYERS
+const screen = screens[0];
 const layerMeshes: {mesh: THREE.Mesh, layer: Layer}[] = [];
-const layers = scenes[0];
+const layers = screen.layers;
 const sceneGroup = new THREE.Group();
 layers.forEach((layer, index) => {
   if (layer.isSmoke || layer.isClouds) {
@@ -85,6 +86,9 @@ layers.forEach((layer, index) => {
 });
 scene.add(sceneGroup);
 
+// UI INTRO
+const layerIntro = new LayerIntro({ title: screen.title, description: screen.description });
+
 // CAMERA
 let aspectRatio = width / height;
 const camera = new THREE.PerspectiveCamera(35, aspectRatio, 0.1, 1000000);
@@ -113,7 +117,6 @@ let blurIntensity = 0; // Current blur radius
 const triggerClick = () => {
   if (!intersects[0]) return;
   const clickedObject = pickableObjects.filter(obj => obj.name === intersects[0].object.name)[0] as THREE.Mesh;
-  const layerIntro = new LayerIntro({ title: "Battle against Noxus", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." });
 }
 document.addEventListener('click', (e) => {
   triggerClick();

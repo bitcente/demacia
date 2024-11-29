@@ -29,3 +29,32 @@
     max-width: calc(100% - 60px);
     margin-bottom: 15px;
 }
+
+.layerIntro h5 {
+    visibility: hidden;
+    position: absolute;
+    margin: 0;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold);
+}
+
+.layerIntro h5::before, .layerIntro h5::after {
+    content: '';
+    background-image: url('/assets/decorator-left.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+    top: .2em;
+    width: 1.75em;
+    height: 1.5em;
+}
+.layerIntro h5::before {
+    background-image: url('/assets/decorator-left.png');
+    left: -2.5em;
+}
+.layerIntro h5::after {
+    background-image: url('/assets/decorator-right.png');
+    right: -2.5em;
+}

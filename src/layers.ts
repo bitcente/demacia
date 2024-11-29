@@ -17,7 +17,7 @@ export type Layer = {
     noiseScale?: number;
 }
 
-export const invasionScene: Layer[] = [
+export const invasionScreen: Layer[] = [
     {
         name: 'background',
         src: 'invasion/invasion_0.png',
@@ -79,7 +79,7 @@ export const invasionScene: Layer[] = [
     }
 ]
 
-export const highSilvermereScene: Layer[] = [
+export const highSilvermereScreen: Layer[] = [
     {
         name: 'background',
         src: 'silvermere/silvermere_0.png',
@@ -143,7 +143,7 @@ export const highSilvermereScene: Layer[] = [
     },
 ]
 
-export const petricitePillarScene: Layer[] = [
+export const petricitePillarScreen: Layer[] = [
     {
         name: 'landscape',
         src: 'petricite_pillar/petricite_pillar_0.png',
@@ -196,7 +196,7 @@ export const petricitePillarScene: Layer[] = [
 ]
 
 
-export const plazaScene: Layer[] = [
+export const plazaScreen: Layer[] = [
     {
         name: 'landscape',
         src: 'plaza/plaza_0.png',
@@ -227,9 +227,29 @@ export const plazaScene: Layer[] = [
     },
 ]
 
-export const scenes = [
-    invasionScene,
-    highSilvermereScene,
-    petricitePillarScene,
-    plazaScene,
-]
+export const screens = [
+    {
+        id: 'invasion',
+        title: 'Battle against Noxus',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        layers: invasionScreen,
+    },
+    {
+        id: 'silvermere',
+        title: 'High Silvermere',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        layers: highSilvermereScreen,
+    },
+    {
+        id: 'petricite',
+        title: 'Mage Seekers',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        layers: petricitePillarScreen,
+    },
+    {
+        id: 'plaza',
+        title: 'The Grand Plaza',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        layers: plazaScreen,
+    },
+];
