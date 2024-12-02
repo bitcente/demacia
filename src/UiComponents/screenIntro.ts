@@ -6,8 +6,10 @@ gsap.registerPlugin(SplitText);
 
 export class LayerIntro {
     screenIntroElement: HTMLDivElement | undefined = undefined;
+    onClose: (() => void) | undefined = undefined;
 
-    constructor({ title, description }: { title: string; description: string }) {
+    constructor({ title, description, onClose }: { title: string; description: string, onClose?: () => void; }) {
+        onClose && (this.onClose = onClose);
         // Remove screenIntro component if exists already
         const oldLayerIntro = document.body.querySelector('.screenIntro');
         if (oldLayerIntro) oldLayerIntro.remove();
@@ -84,8 +86,6 @@ export class LayerIntro {
     }
 
     close() {
-        console.log("JEJE", this.screenIntroElement);
-        
         // Remove screenIntro component if exists already
         if (!this.screenIntroElement) return;
 
@@ -95,6 +95,7 @@ export class LayerIntro {
             duration: 1,
             onComplete: () => {
                 this.screenIntroElement && this.screenIntroElement.remove();
+                this.onClose?.();
             }
         })
     }
