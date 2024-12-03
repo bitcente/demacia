@@ -16,7 +16,6 @@ export class LayerIntro {
 
         // Create screenIntro with input title and description
         this.screenIntroElement = document.createElement('div');
-        console.log(this.screenIntroElement);
         
         this.screenIntroElement.classList.add('screenIntro');
         this.screenIntroElement.addEventListener('click', this.close.bind(this), false);

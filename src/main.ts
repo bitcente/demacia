@@ -1,15 +1,18 @@
-import { objectFragmentShader, objectVertexShader } from './shaders/object';
-import { Layer, screens } from './layers';
-import './style.css'
-import * as THREE from 'three';
-import { smokeFragmentShader, smokeVertexShader } from './shaders/smoke';
-import { LayerIntro } from './UiComponents/screenIntro';
 import gsap from 'gsap';
+import * as THREE from 'three';
+import { Layer, screens } from './layers';
 import { textureLoader } from './loaders/textureLoader';
-import { height, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
-import { cursor, itemClicked, mouse, setItemClicked } from './variables/cursor';
-import { animatedObjects, intersectedObject, pickableObjects, setIntersectedObject } from './variables/objects';
+import { camera } from './objects/camera';
+import { intersects, updateRaycaster } from './objects/raycaster';
+import { renderer } from './objects/renderer';
+import { objectFragmentShader, objectVertexShader } from './shaders/object';
+import { smokeFragmentShader, smokeVertexShader } from './shaders/smoke';
+import './style.css';
+import { LayerIntro } from './UiComponents/screenIntro';
+import { cursor, cursorDelta, itemClicked, setItemClicked, updateCursorDeltaOnFrame } from './variables/cursor';
 import { canInteract, setCanInteract } from './variables/interaction';
+import { animatedObjects, intersectedObject, pickableObjects } from './variables/objects';
+import { height, optimalRatio, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
 
 // SCENE
 const scene = new THREE.Scene();
@@ -77,21 +80,7 @@ layers.forEach((layer, index) => {
 scene.add(sceneGroup);
 
 // UI INTRO
-const screenIntro = new LayerIntro({ title: screen.title, description: screen.description, onClose: () => setCanInteract(true) });
-
-// CAMERA
-let aspectRatio = width / height;
-const camera = new THREE.PerspectiveCamera(35, aspectRatio, 0.1, 1000000);
-camera.position.z = 100;
-
-// RENDERER
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(width, height);
-document.querySelector('body')?.appendChild(renderer.domElement);
-
-// RAYCASTER
-const raycaster = new THREE.Raycaster();
-let intersects: THREE.Intersection[];
+new LayerIntro({ title: screen.title, description: screen.description, onClose: () => setCanInteract(true) });
 
 // BRIGHT ELEMENT
 const brightElementByMaterial = ({ material, brightness = 2 }: { material: THREE.ShaderMaterial; brightness?: number }) => {
@@ -101,17 +90,10 @@ const brightElementByMaterial = ({ material, brightness = 2 }: { material: THREE
     y: brightness,
     z: brightness,
     duration: 1.5,
-  })
+  });
 }
 
 // MOUSE MOVE
-document.addEventListener('pointermove', (e) => {
-  cursor.x = e.x;
-  cursor.y = e.y;
-  mouse.x = ( e.x / width ) * 2 - 1;
-  mouse.y = - ( e.y / height ) * 2 + 1;
-})
-let previousCursor = { x: 0, y: 0 }; // Track cursor position in the previous frame
 let blurIntensity = 0; // Current blur radius
 
 // CLICK
@@ -150,27 +132,13 @@ const animate = () => {
   })
  
   if (canInteract) {
-    
-    // Calculate cursor movement
-    const cursorDelta = Math.sqrt(Math.pow(cursor.x - previousCursor.x, 2) + Math.pow(cursor.y - previousCursor.y, 2));
+
     // Update blur intensity based on cursor movement
+    updateCursorDeltaOnFrame();
     blurIntensity = THREE.MathUtils.lerp(blurIntensity, cursorDelta > 0.1 ? .6 : 0, 0.1);
   
-    // Update the previous cursor position
-    previousCursor.x = cursor.x;
-    previousCursor.y = cursor.y;
-  
     // Hover
-    raycaster.setFromCamera(mouse, camera);
-    intersects = raycaster.intersectObjects(pickableObjects, true);
-    
-    if (intersects.length > 0) {
-      setIntersectedObject(intersects[0].object);
-      document.body.classList.add('cursor-pointer');
-    } else {
-      setIntersectedObject(null);
-      document.body.classList.remove('cursor-pointer');
-    }
+    updateRaycaster();
   
     // Light up objects
     if (!itemClicked) {
@@ -217,14 +185,12 @@ const animate = () => {
 
   }
 
-
   renderer.render(scene, camera);
 }
 animate();
 
 // RESIZE
 const adjustSceneScale = () => {
-  const optimalRatio = 16/9;
   setScreenRatio(width / height)
   let scale = 1;
   if (screenRatio > optimalRatio) { // window too large
