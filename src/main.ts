@@ -1,80 +1,32 @@
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { Layer, screens } from './layers';
-import { textureLoader } from './loaders/textureLoader';
+import { cloudsLayer } from './layers/cloudsLayer';
+import { imageLayer } from './layers/imageLayer';
+import { smokeLayer } from './layers/smokeLayer';
 import { camera } from './objects/camera';
 import { intersects, updateRaycaster } from './objects/raycaster';
 import { renderer } from './objects/renderer';
-import { objectFragmentShader, objectVertexShader } from './shaders/object';
-import { smokeFragmentShader, smokeVertexShader } from './shaders/smoke';
 import './style.css';
 import { LayerIntro } from './UiComponents/screenIntro';
 import { cursor, cursorDelta, itemClicked, setItemClicked, updateCursorDeltaOnFrame } from './variables/cursor';
 import { canInteract, setCanInteract } from './variables/interaction';
+import { layerMeshes, layers } from './variables/layers';
 import { animatedObjects, intersectedObject, pickableObjects } from './variables/objects';
+import { screen } from './variables/screen';
 import { height, optimalRatio, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
 
 // SCENE
 const scene = new THREE.Scene();
 
 // LAYERS
-const screen = screens[2];
-const layerMeshes: {mesh: THREE.Mesh, layer: Layer}[] = [];
-const layers = screen.layers;
-const sceneGroup = new THREE.Group();
+export const sceneGroup = new THREE.Group();
 layers.forEach((layer, index) => {
-  if (layer.isSmoke || layer.isClouds) {
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        uTime: { value: 0 },
-        uResolution: { value: new THREE.Vector2(width, height) },
-        uSmokeDirection: { value: layer.isClouds ? new THREE.Vector2(-1.0, -0.5) : new THREE.Vector2(1.0, 0.5) },
-        uSmokeColor: { value: new THREE.Vector3(1.0, 1.0, 1.0) },
-        uFadeDirection: { value: layer.isClouds ? 0.0 : 1.0 },
-        uSmokeScale: { value: layer.isClouds ? 1.0 : 0.4 },
-        uSmokeLight: { value: layer.isClouds ? 1.0 : 0.0 },
-        uSpeed: { value: layer.isClouds ? 0.01 : 0.02 },
-        uNoiseScale: { value: layer.noiseScale ?? 70.0 },
-      },
-      transparent: true,
-      vertexShader: smokeVertexShader(),
-      fragmentShader: smokeFragmentShader(),
-    })
-    const geometry = new THREE.PlaneGeometry(1, 1, 1);
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.name = layer.name;
-    layerMeshes.push({ mesh, layer });
-    mesh.position.set(-cursor.x + layer.position.x - width / 2, cursor.y - layer.position.y, layer.position.z);
-    mesh.scale.set(layer.width! * layer.scale, layer.height! * layer.scale, 1);
-    sceneGroup.add(mesh);
-    animatedObjects.push(mesh);
+  if (layer.isClouds) {
+    cloudsLayer({ layer });
+  } else if (layer.isSmoke) {
+    smokeLayer({ layer });
   } else if (layer.src) {
-    const texture = textureLoader.load(layer.src, (tex) => {
-      layers[index].height = tex.image.height;
-      layers[index].width = tex.image.width;
-      const material = new THREE.ShaderMaterial({
-        uniforms: {
-          u_tDiffuse: { value: texture },
-          u_opacity: { value: 1 },
-          u_resolution: { value: { x: width, y: height } },
-          u_cursor: { value: cursor },
-          u_blur: { value: 0 },
-          u_colorFilter: { value: new THREE.Vector4(1.0, 1.0, 1.0, 1.0) },
-        },
-        transparent: true,
-        vertexShader: objectVertexShader(),
-        fragmentShader: objectFragmentShader(),
-      })
-    
-      const geometry = new THREE.PlaneGeometry(1, 1, 1);
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.name = layer.name;
-      layerMeshes.push({ mesh, layer });
-      mesh.position.set(-cursor.x + layer.position.x - width / 2, cursor.y - layer.position.y, layer.position.z);
-      mesh.scale.set(layer.width! * layer.scale, layer.height! * layer.scale, 1);
-      sceneGroup.add(mesh);
-      if (layer.hoverBrightness) pickableObjects.push(mesh)
-    });
+    imageLayer({ layer, index });
   }
 });
 scene.add(sceneGroup);
@@ -129,7 +81,7 @@ const animate = () => {
   animatedObjects.forEach(object => {
     const material = object.material as THREE.ShaderMaterial;
     material.uniforms.uTime.value = elapsedTime;
-  })
+  });
  
   if (canInteract) {
 
