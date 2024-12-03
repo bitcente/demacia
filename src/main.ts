@@ -5,27 +5,14 @@ import * as THREE from 'three';
 import { smokeFragmentShader, smokeVertexShader } from './shaders/smoke';
 import { LayerIntro } from './UiComponents/screenIntro';
 import gsap from 'gsap';
-
-// GLOBAL VARIABLES
-let width = window.innerWidth;
-let height = window.innerHeight;
-const cursor = new THREE.Vector2(width / 2 - 1, height / 2 - 1);
-const mouse = new THREE.Vector2();
-const pickableObjects: THREE.Mesh[] = [];
-let intersectedObject: THREE.Object3D | null;
-const animatedObjects: THREE.Mesh[] = [];
-let screenRatio = width / height;
-let itemClicked: string | undefined;
-let canInteract = false;
-
-// HUD
-const hudDomElement = document.querySelector('.hud');
+import { textureLoader } from './loaders/textureLoader';
+import { height, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
+import { cursor, itemClicked, mouse, setItemClicked } from './variables/cursor';
+import { animatedObjects, intersectedObject, pickableObjects, setIntersectedObject } from './variables/objects';
+import { canInteract, setCanInteract } from './variables/interaction';
 
 // SCENE
 const scene = new THREE.Scene();
-
-// TEXTURE LOADER
-const textureLoader = new THREE.TextureLoader();
 
 // LAYERS
 const screen = screens[2];
@@ -90,7 +77,7 @@ layers.forEach((layer, index) => {
 scene.add(sceneGroup);
 
 // UI INTRO
-const screenIntro = new LayerIntro({ title: screen.title, description: screen.description, onClose: () => canInteract = true });
+const screenIntro = new LayerIntro({ title: screen.title, description: screen.description, onClose: () => setCanInteract(true) });
 
 // CAMERA
 let aspectRatio = width / height;
@@ -143,7 +130,7 @@ const focusElementByName = ({ name }: { name: string }) => {
 const triggerClick = () => {
   if (!intersects[0]) return;
   const clickedObject = pickableObjects.filter(obj => obj.name === intersects[0].object.name)[0] as THREE.Mesh;
-  itemClicked = clickedObject.name;
+  setItemClicked(clickedObject.name);
   focusElementByName({ name: clickedObject.name });
 }
 document.addEventListener('click', (e) => {
@@ -178,10 +165,10 @@ const animate = () => {
     intersects = raycaster.intersectObjects(pickableObjects, true);
     
     if (intersects.length > 0) {
-      intersectedObject = intersects[0].object;
+      setIntersectedObject(intersects[0].object);
       document.body.classList.add('cursor-pointer');
     } else {
-      intersectedObject = null;
+      setIntersectedObject(null);
       document.body.classList.remove('cursor-pointer');
     }
   
@@ -238,7 +225,7 @@ animate();
 // RESIZE
 const adjustSceneScale = () => {
   const optimalRatio = 16/9;
-  screenRatio = width / height;
+  setScreenRatio(width / height)
   let scale = 1;
   if (screenRatio > optimalRatio) { // window too large
     scale = 1 + (screenRatio - optimalRatio) * .5;
@@ -248,8 +235,8 @@ const adjustSceneScale = () => {
 adjustSceneScale();
 
 window.addEventListener('resize', () => {
-  width = window.innerWidth;
-  height = window.innerHeight;
+  setWidth(window.innerWidth);
+  setHeight(window.innerHeight);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
   renderer.setSize( width, height );
