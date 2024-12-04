@@ -1,14 +1,13 @@
 import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, Vector3 } from "three";
 import { Layer } from "../layers";
-import { height, width } from "../variables/size";
 import { smokeFragmentShader, smokeVertexShader } from "../shaders/smoke";
-import { layerMeshes } from "../variables/layers";
 import { cursor } from "../variables/cursor";
-import { sceneGroup } from "../main";
+import { layerMeshes } from "../variables/layers";
 import { animatedObjects } from "../variables/objects";
+import { height, width } from "../variables/size";
 
 
-export const cloudsLayer = ({ layer }: { layer: Layer }) => {
+export const cloudsLayer = ({ layer }: { layer: Layer }): Mesh => {
     const material = new ShaderMaterial({
         uniforms: {
             uTime: { value: 0 },
@@ -31,6 +30,6 @@ export const cloudsLayer = ({ layer }: { layer: Layer }) => {
     layerMeshes.push({ mesh, layer });
     mesh.position.set(-cursor.x + layer.position.x - width / 2, cursor.y - layer.position.y, layer.position.z);
     mesh.scale.set(layer.width! * layer.scale, layer.height! * layer.scale, 1);
-    sceneGroup.add(mesh);
     animatedObjects.push(mesh);
+    return mesh;
 }

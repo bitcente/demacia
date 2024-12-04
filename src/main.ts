@@ -1,48 +1,28 @@
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { cloudsLayer } from './layers/cloudsLayer';
-import { imageLayer } from './layers/imageLayer';
-import { smokeLayer } from './layers/smokeLayer';
 import { camera } from './objects/camera';
 import { intersects, updateRaycaster } from './objects/raycaster';
 import { renderer } from './objects/renderer';
+import { Screen } from './screens/screen';
 import './style.css';
 import { LayerIntro } from './UiComponents/screenIntro';
 import { cursor, cursorDelta, itemClicked, setItemClicked, updateCursorDeltaOnFrame } from './variables/cursor';
 import { canInteract, setCanInteract } from './variables/interaction';
-import { layerMeshes, layers } from './variables/layers';
+import { layerMeshes } from './variables/layers';
 import { animatedObjects, intersectedObject, pickableObjects } from './variables/objects';
-import { screen } from './variables/screen';
 import { height, optimalRatio, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
+import { brightElementByMaterial } from './helpers/brightElementByMaterial';
 
 // SCENE
-const scene = new THREE.Scene();
+const id = 'invasion';
 
-// LAYERS
-export const sceneGroup = new THREE.Group();
-layers.forEach((layer, index) => {
-  if (layer.isClouds) {
-    cloudsLayer({ layer });
-  } else if (layer.isSmoke) {
-    smokeLayer({ layer });
-  } else if (layer.src) {
-    imageLayer({ layer, index });
-  }
-});
-scene.add(sceneGroup);
+const scene = new Screen({ id });
+const sceneData = scene.data;
+await scene.init();
 
 // UI INTRO
-new LayerIntro({ title: screen.title, description: screen.description, onClose: () => setCanInteract(true) });
-
-// BRIGHT ELEMENT
-const brightElementByMaterial = ({ material, brightness = 2 }: { material: THREE.ShaderMaterial; brightness?: number }) => {
-  if (!material.uniforms.u_colorFilter) return;
-  gsap.to(material.uniforms.u_colorFilter.value, {
-    x: brightness,
-    y: brightness,
-    z: brightness,
-    duration: 1.5,
-  });
+if (sceneData) {
+  new LayerIntro({ title: sceneData.title, description: sceneData.description, onClose: () => setCanInteract(true) });
 }
 
 // MOUSE MOVE
@@ -137,7 +117,7 @@ const animate = () => {
 
   }
 
-  renderer.render(scene, camera);
+  renderer.render(scene.scene, camera);
 }
 animate();
 
@@ -148,7 +128,7 @@ const adjustSceneScale = () => {
   if (screenRatio > optimalRatio) { // window too large
     scale = 1 + (screenRatio - optimalRatio) * .5;
   }
-  sceneGroup.scale.set(scale,scale,1);
+  scene.sceneGroup.scale.set(scale,scale,1);
 }
 adjustSceneScale();
 
