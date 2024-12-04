@@ -39,6 +39,7 @@ export class Screen {
                 const material = pickableObjects[i].material as ShaderMaterial;
                 if (material) {
                     const layerHoveredIndex = this._layerMeshes.findIndex(layerMesh => layerMesh.layer.name === o.name);
+                    if (!layerHoveredIndex || !this._layerMeshes[layerHoveredIndex]) return;
                     const hoverBrightness = this._layerMeshes[layerHoveredIndex].layer.hoverBrightness;
                     if (hoverBrightness) {
                         if (intersectedObject && intersectedObject.name === o.name) {

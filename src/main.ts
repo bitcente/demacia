@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import { brightElementByMaterial } from './helpers/brightElementByMaterial';
-import { camera } from './objects/camera';
 import { intersects, updateRaycaster } from './objects/raycaster';
-import { renderer } from './objects/renderer';
+import { Renderer } from './objects/renderer';
 import { Screen } from './screens/screen';
 import './style.css';
 import { LayerIntro } from './UiComponents/screenIntro';
@@ -11,13 +10,39 @@ import { canInteract, setCanInteract } from './variables/interaction';
 import { layerMeshes } from './variables/layers';
 import { animatedObjects, pickableObjects } from './variables/objects';
 import { height, optimalRatio, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
+import { Camera, setCurrentCamera } from './objects/camera';
 
 // SCENE
+let currentScreen: Screen;
+
 const id = 'invasion';
 
 const scene = new Screen({ id });
+currentScreen = scene;
 const sceneData = scene.data;
 await scene.init();
+
+// Camera
+const camera = new Camera();
+setCurrentCamera(camera);
+
+// Renderer
+export const renderer = new Renderer({ scene: scene.scene, camera });
+
+const id2 = 'silvermere';
+
+const scene2 = new Screen({ id: id2 });
+await scene2.init();
+
+// Camera
+const camera2 = new Camera();
+
+setTimeout(() => {
+  renderer.transitionToScene({ targetScene: scene2.scene, targetCamera: camera2, onComplete: () => {
+    currentScreen = scene2;
+  } })
+}, 3000);
+
 
 // UI INTRO
 if (sceneData) {
@@ -71,19 +96,19 @@ const animate = () => {
     // Hover
     updateRaycaster();
   
-    scene.render();
+    currentScreen.render();
     
     camera.rotation.z = THREE.MathUtils.lerp(camera.rotation.z, (cursor.x / width - .5)  * .01, 0.1);
 
   }
 
-  renderer.render(scene.scene, camera);
+  renderer.render();
 }
 animate();
 
 // RESIZE
 const adjustSceneScale = () => {
-  setScreenRatio(width / height)
+  setScreenRatio(width / height);
   let scale = 1;
   if (screenRatio > optimalRatio) { // window too large
     scale = 1 + (screenRatio - optimalRatio) * .5;
@@ -97,6 +122,6 @@ window.addEventListener('resize', () => {
   setHeight(window.innerHeight);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  renderer.setSize( width, height );
+  renderer.updateSize();
   adjustSceneScale();
 })

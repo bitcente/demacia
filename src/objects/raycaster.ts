@@ -1,6 +1,6 @@
 import { Raycaster, Intersection } from "three";
 import { mouse } from "../variables/cursor";
-import { camera } from "./camera";
+import { currentCamera } from "./camera";
 import { pickableObjects, setIntersectedObject } from "../variables/objects";
 
 export const raycaster = new Raycaster();
@@ -11,7 +11,9 @@ export const setIntersects = (value: Intersection[]) => {
 }
 
 export const updateRaycaster = () => {
-    raycaster.setFromCamera(mouse, camera);
+    if (!currentCamera) return;
+    
+    raycaster.setFromCamera(mouse, currentCamera);
     setIntersects(raycaster.intersectObjects(pickableObjects, true));
 
     if (intersects.length > 0) {
