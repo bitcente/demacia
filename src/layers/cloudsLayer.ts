@@ -6,7 +6,6 @@ import { layerMeshes } from "../variables/layers";
 import { animatedObjects } from "../variables/objects";
 import { height, width } from "../variables/size";
 
-
 export const cloudsLayer = ({ layer }: { layer: Layer }): Mesh => {
     const material = new ShaderMaterial({
         uniforms: {

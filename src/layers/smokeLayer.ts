@@ -6,7 +6,6 @@ import { layerMeshes } from "../variables/layers";
 import { cursor } from "../variables/cursor";
 import { animatedObjects } from "../variables/objects";
 
-
 export const smokeLayer = ({ layer }: { layer: Layer }): Mesh => {
     const material = new ShaderMaterial({
         uniforms: {

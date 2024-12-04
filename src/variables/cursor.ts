@@ -6,9 +6,13 @@ export const mouse = new Vector2();
 export let itemClicked: string | undefined;
 export const previousCursor = { x: 0, y: 0 };
 export let cursorDelta = 0;
+export let blurIntensity = 0; // based on cursor movement
 
 export const setItemClicked = (value: string | undefined) => {
     itemClicked = value;
+}
+export const setBlurIntensity = (value: number) => {
+    blurIntensity = value;
 }
 
 export const updateCursorDeltaOnFrame = () => {

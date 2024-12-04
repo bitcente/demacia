@@ -1,10 +1,11 @@
-import { screens } from "../layers";
+import { Mesh } from "three";
+import { Layer, screens } from "../layers";
 import { cloudsLayer } from "./cloudsLayer";
 import { imageLayer } from "./imageLayer";
 import { smokeLayer } from "./smokeLayer";
 
-export const getLayersByScreenId = async ({ id }: { id: string }): Promise<any[]> => {
-    const layers: Promise<any>[] = [];
+export const getLayersByScreenId = async ({ id }: { id: string }): Promise<{ mesh: Mesh; layer: Layer }[]> => {
+    const layers: Promise<{ mesh: Mesh; layer: Layer }>[] = [];
     const screenInfo = screens.find((searchedScreen) => searchedScreen.id === id);
 
     if (!screenInfo) {
@@ -14,14 +15,21 @@ export const getLayersByScreenId = async ({ id }: { id: string }): Promise<any[]
 
     screenInfo.layers.forEach((layer) => {
         if (layer.isClouds) {
-            layers.push(Promise.resolve(cloudsLayer({ layer }))); // Wrap synchronous calls in a resolved promise
+            layers.push( Promise.resolve({ mesh: cloudsLayer({ layer }), layer }) );
         } else if (layer.isSmoke) {
-            layers.push(Promise.resolve(smokeLayer({ layer }))); // Wrap synchronous calls in a resolved promise
+            layers.push( Promise.resolve({ mesh: smokeLayer({ layer }), layer }) );
         } else if (layer.src) {
-            layers.push(imageLayer({ layer })); // Push the promise returned by imageLayer
+            layers.push(
+                imageLayer({ layer }).then((mesh) => {
+                    if (mesh) {
+                        return { mesh, layer };
+                    } else {
+                        throw new Error(`Failed to create mesh for layer with src: ${layer.src}`);
+                    }
+                })
+            );
         }
     });
 
-    // Resolve all promises
     return Promise.all(layers);
 };

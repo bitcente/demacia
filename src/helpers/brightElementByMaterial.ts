@@ -1,3 +1,4 @@
+import gsap from "gsap";
 import { ShaderMaterial } from "three";
 
 export const brightElementByMaterial = ({ material, brightness = 2 }: { material: ShaderMaterial; brightness?: number }) => {
