@@ -5,6 +5,8 @@ import { blurIntensity, cursor, itemClicked } from "../variables/cursor";
 import { width } from "../variables/size";
 import { intersectedObject, pickableObjects } from "../variables/objects";
 import { cleanMaterial } from "../helpers/cleanMaterial";
+import { LayerIntro } from "../UiComponents/screenIntro";
+import { setCanInteract } from "../variables/interaction";
 
 
 export class Screen {
@@ -30,7 +32,10 @@ export class Screen {
         this._layerMeshes = await getLayersByScreenId({ id: this._id });
         this._layerMeshes.forEach(layerMesh => {
             this._scene.add(layerMesh.mesh);
-        })
+        });
+        setTimeout(() => {
+            this.showIntro();
+        }, 700);
     }
 
     render() {
@@ -44,6 +49,8 @@ export class Screen {
                     const hoverBrightness = this._layerMeshes[layerHoveredIndex].layer.hoverBrightness;
                     if (hoverBrightness) {
                         if (intersectedObject && intersectedObject.name === o.name) {
+                            console.log(o.name);
+                            
                             layerHoveredIndex && (this._layerMeshes[layerHoveredIndex].layer.isBeingHovered = true);
                             material.uniforms.u_colorFilter.value.x = MathUtils.lerp(material.uniforms.u_colorFilter.value.x, hoverBrightness, 0.1);
                             material.uniforms.u_colorFilter.value.y = MathUtils.lerp(material.uniforms.u_colorFilter.value.y, hoverBrightness, 0.1);
@@ -75,6 +82,11 @@ export class Screen {
                 material.uniforms.u_blur.value = MathUtils.lerp(material.uniforms.u_blur.value, blurIntensity * layer.blurOnMovement * (layer.isBeingHovered ? 0 : 1), 0.1);
             }
         });
+    }
+    
+    showIntro() {
+        if (!this._data) return;
+        new LayerIntro({ title: this._data.title, description: this._data.description, onClose: () => setCanInteract(true) });
     }
 
     dispose() {

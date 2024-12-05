@@ -5,7 +5,7 @@ import { Renderer } from './objects/renderer';
 import { Screen } from './screens/screen';
 import './style.css';
 import { LayerIntro } from './UiComponents/screenIntro';
-import { cursor, cursorDelta, setBlurIntensity, setItemClicked, updateCursorDeltaOnFrame } from './variables/cursor';
+import { cursor, cursorDelta, setBlurIntensity, setItemClicked, unfocusEverything, updateCursorDeltaOnFrame } from './variables/cursor';
 import { canInteract, setCanInteract } from './variables/interaction';
 import { layerMeshes, setLayerMeshes } from './variables/layers';
 import { animatedObjects, pickableObjects } from './variables/objects';
@@ -18,7 +18,7 @@ export const setCurrentScreen = (newScreen: Screen) => {
   currentScreen = newScreen;
 }
 
-const id = 'invasion';
+const id = 'petricite';
 
 const screen1 = new Screen({ id });
 currentScreen = screen1;
@@ -34,10 +34,9 @@ export const renderer = new Renderer({ scene: screen1.scene, camera });
 
 window.addEventListener('keypress', async (e) => {
   if (e.key === 'q') { // to test
-    const id2 = 'petricite';
+    const id2 = 'plaza';
 
     const screen2 = new Screen({ id: id2 });
-    const screen2Data = screen2.data;
     await screen2.init();
 
     // Camera
@@ -47,11 +46,6 @@ window.addEventListener('keypress', async (e) => {
         setCurrentScreen(screen2);
         setCanInteract(false);
         unfocusEverything();
-
-        // UI intro
-        if (screen2Data) {
-          new LayerIntro({ title: screen2Data.title, description: screen2Data.description, onClose: () => setCanInteract(true) });
-        }
 
         // Remove items from old scene in layerMeshes
         if (screen1Data) {
@@ -65,47 +59,8 @@ window.addEventListener('keypress', async (e) => {
   }
 })
 
-
-// UI INTRO
-if (screen1Data) {
-  new LayerIntro({ title: screen1Data.title, description: screen1Data.description, onClose: () => setCanInteract(true) });
-}
-
 // MOUSE MOVE
 let blurIntensity = 0; // Current blur radius
-
-// CLICK
-const focusElementByName = ({ name }: { name: string }) => {
-  layerMeshes.forEach(({ mesh, layer }) => {
-    if (!layer.src) return;
-    const material = mesh.material as THREE.ShaderMaterial;
-    if (mesh.name === name) {
-      brightElementByMaterial({ material, brightness: 2 });
-    } else {
-      brightElementByMaterial({ material, brightness: .5 });
-    }
-  })
-}
-const unfocusEverything = () => {
-  layerMeshes.forEach(({ mesh, layer }) => {
-    if (!layer.src) return;
-    const material = mesh.material as THREE.ShaderMaterial;
-    brightElementByMaterial({ material, brightness: 1 });
-  })
-}
-
-const triggerClick = () => {
-  if (!intersects || !intersects[0]) {
-    unfocusEverything();
-  } else {
-    const clickedObject = pickableObjects.filter(obj => obj.name === intersects[0].object.name)[0] as THREE.Mesh;
-    setItemClicked(clickedObject.name);
-    focusElementByName({ name: clickedObject.name });
-  }
-}
-document.addEventListener('click', () => {
-  canInteract && triggerClick();
-})
 
 
 // ANIMATE
