@@ -64,10 +64,24 @@ export class Renderer {
         this._renderTransitionPass.setTexture( this._transitionTexture );
         this._composer.insertPass( this._renderTransitionPass, 0 );
 
+
+        gsap.to(this._currentScene.scale, {
+            x: 1.5,
+            y: 1.5,
+            duration: 2,
+            ease: "power2.inOut",
+        });
+        gsap.from(this._targetScene.scale, {
+            x: .9,
+            y: .9,
+            duration: 2,
+            ease: "power2.inOut",
+        });
+
         gsap.to(this, {
             _transition: 1,
             duration: 2,
-            ease: "power1.inOut",
+            ease: "power2.inOut",
             onUpdate: () => {
                 if (!this._renderTransitionPass) return;
                 this._renderTransitionPass.setTransition( this._transition );

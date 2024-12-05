@@ -29,9 +29,10 @@ setCurrentCamera(camera);
 // Renderer
 export const renderer = new Renderer({ scene: scene.scene, camera });
 
-const id2 = 'silvermere';
+const id2 = 'petricite';
 
 const scene2 = new Screen({ id: id2 });
+const sceneData2 = scene2.data;
 await scene2.init();
 
 // Camera
@@ -40,6 +41,11 @@ const camera2 = new Camera();
 setTimeout(() => {
   renderer.transitionToScene({ targetScene: scene2.scene, targetCamera: camera2, onComplete: () => {
     currentScreen = scene2;
+    setCanInteract(false);
+    // UI INTRO
+    if (sceneData2) {
+      new LayerIntro({ title: sceneData2.title, description: sceneData2.description, onClose: () => setCanInteract(true) });
+    }
   } })
 }, 3000);
 
