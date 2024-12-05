@@ -1,0 +1,1 @@
+export const hudDomElement = document.querySelector('.hud');
