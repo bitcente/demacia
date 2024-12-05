@@ -1,16 +1,14 @@
 import * as THREE from 'three';
-import { brightElementByMaterial } from './helpers/brightElementByMaterial';
-import { intersects, updateRaycaster } from './objects/raycaster';
+import { Camera, setCurrentCamera } from './objects/camera';
+import { updateRaycaster } from './objects/raycaster';
 import { Renderer } from './objects/renderer';
 import { Screen } from './screens/screen';
 import './style.css';
-import { LayerIntro } from './UiComponents/screenIntro';
 import { cursor, cursorDelta, setBlurIntensity, setItemClicked, unfocusEverything, updateCursorDeltaOnFrame } from './variables/cursor';
 import { canInteract, setCanInteract } from './variables/interaction';
 import { layerMeshes, setLayerMeshes } from './variables/layers';
-import { animatedObjects, pickableObjects } from './variables/objects';
+import { animatedObjects } from './variables/objects';
 import { height, optimalRatio, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
-import { Camera, setCurrentCamera } from './objects/camera';
 
 // SCENE
 export let currentScreen: Screen;
@@ -34,6 +32,9 @@ export const renderer = new Renderer({ scene: screen1.scene, camera });
 
 window.addEventListener('keypress', async (e) => {
   if (e.key === 'q') { // to test
+    setItemClicked();
+    setCanInteract(false);
+
     const id2 = 'plaza';
 
     const screen2 = new Screen({ id: id2 });
@@ -41,18 +42,14 @@ window.addEventListener('keypress', async (e) => {
 
     // Camera
     const camera2 = new Camera();
-    renderer.transitionToScene({ targetScene: screen2.scene, targetCamera: camera2,
+    renderer.transitionToScene({
+      targetScene: screen2.scene,
+      targetCamera: camera2,
       onComplete: () => {
         setCurrentScreen(screen2);
-        setCanInteract(false);
         unfocusEverything();
 
-        // Remove items from old scene in layerMeshes
-        if (screen1Data) {
-          const idsToRemove = new Set(screen1Data.layers.map(item => item.name));
-          setLayerMeshes(layerMeshes.filter(item => !idsToRemove.has(item.layer.name)));
-        }
-
+        // Remove everything associated with the first scene
         screen1.dispose();
       }
     })

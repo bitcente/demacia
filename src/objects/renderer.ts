@@ -58,12 +58,12 @@ export class Renderer {
         targetCamera: Camera;
         onComplete?: () => void;
     }) {
+        // Set target scene and insert pass to composer
         this._targetScene = targetScene;
         this._targetCamera = targetCamera;
         this._renderTransitionPass = new RenderTransitionPass( this._targetScene, this._targetCamera, this._currentScene, this._currentCamera );
         this._renderTransitionPass.setTexture( this._transitionTexture );
         this._composer.insertPass( this._renderTransitionPass, 0 );
-
 
         gsap.to(this._currentScene.scale, {
             x: 1.5,

@@ -3,10 +3,11 @@ import { getLayersByScreenId } from "../layers/getLayersByScreenId";
 import { Layer, screens } from "../layers";
 import { blurIntensity, cursor, itemClicked } from "../variables/cursor";
 import { width } from "../variables/size";
-import { intersectedObject, pickableObjects } from "../variables/objects";
+import { animatedObjects, intersectedObject, pickableObjects, setAnimatedObjects, setPickableObjects } from "../variables/objects";
 import { cleanMaterial } from "../helpers/cleanMaterial";
 import { LayerIntro } from "../UiComponents/screenIntro";
 import { setCanInteract } from "../variables/interaction";
+import { layerMeshes, setLayerMeshes } from "../variables/layers";
 
 
 export class Screen {
@@ -90,6 +91,14 @@ export class Screen {
     }
 
     dispose() {
+        if (this._data) {
+            const idsToRemove = new Set(this._data.layers.map(item => item.name));
+
+            setLayerMeshes(layerMeshes.filter(item => !idsToRemove.has(item.layer.name)));
+            setAnimatedObjects(animatedObjects.filter(item => !idsToRemove.has(item.name)));
+            setPickableObjects(pickableObjects.filter(item => !idsToRemove.has(item.name)));
+        }
+
         this._scene.traverse((object: Object3D<Object3DEventMap>) => {
             if (!(object instanceof Mesh)) return;
             

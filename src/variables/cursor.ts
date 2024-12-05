@@ -13,9 +13,6 @@ export const previousCursor = { x: 0, y: 0 };
 export let cursorDelta = 0;
 export let blurIntensity = 0; // based on cursor movement
 
-export const setItemClicked = (value?: string) => {
-    itemClicked = value;
-}
 export const setBlurIntensity = (value: number) => {
     blurIntensity = value;
 }
@@ -37,6 +34,10 @@ document.addEventListener('pointermove', (e) => {
 
 
 // CLICK
+export const setItemClicked = (value?: string) => {
+    itemClicked = value;
+}
+
 export const focusElementByName = ({ name }: { name: string }) => {
     layerMeshes.forEach(({ mesh, layer }) => {
         if (!layer.src) return;
@@ -62,6 +63,7 @@ export const triggerClick = () => {
         setItemClicked();
     } else {
         const clickedObject = pickableObjects.filter(obj => obj.name === intersects[0].object.name)[0] as Mesh;
+        console.log(clickedObject.name);
         setItemClicked(clickedObject.name);
         focusElementByName({ name: clickedObject.name });
     }
