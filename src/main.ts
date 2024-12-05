@@ -7,13 +7,16 @@ import './style.css';
 import { LayerIntro } from './UiComponents/screenIntro';
 import { cursor, cursorDelta, setBlurIntensity, setItemClicked, updateCursorDeltaOnFrame } from './variables/cursor';
 import { canInteract, setCanInteract } from './variables/interaction';
-import { layerMeshes } from './variables/layers';
+import { layerMeshes, setLayerMeshes } from './variables/layers';
 import { animatedObjects, pickableObjects } from './variables/objects';
 import { height, optimalRatio, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
 import { Camera, setCurrentCamera } from './objects/camera';
 
 // SCENE
-let currentScreen: Screen;
+export let currentScreen: Screen;
+export const setCurrentScreen = (newScreen: Screen) => {
+  currentScreen = newScreen;
+}
 
 const id = 'invasion';
 
@@ -38,16 +41,27 @@ await scene2.init();
 // Camera
 const camera2 = new Camera();
 
-setTimeout(() => {
-  renderer.transitionToScene({ targetScene: scene2.scene, targetCamera: camera2, onComplete: () => {
-    currentScreen = scene2;
-    setCanInteract(false);
-    // UI INTRO
-    if (sceneData2) {
-      new LayerIntro({ title: sceneData2.title, description: sceneData2.description, onClose: () => setCanInteract(true) });
-    }
-  } })
-}, 3000);
+window.addEventListener('keypress', (e) => {
+  if (e.key === 'q') // to test
+    renderer.transitionToScene({ targetScene: scene2.scene, targetCamera: camera2,
+      onComplete: () => {
+        setCurrentScreen(scene2);
+        setCanInteract(false);
+        unfocusEverything();
+
+        // UI intro
+        if (sceneData2) {
+          new LayerIntro({ title: sceneData2.title, description: sceneData2.description, onClose: () => setCanInteract(true) });
+        }
+
+        // Remove items from old scene in layerMeshes
+        if (sceneData) {
+          const idsToRemove = new Set(sceneData.layers.map(item => item.name));
+          setLayerMeshes(layerMeshes.filter(item => !idsToRemove.has(item.layer.name)));
+        }
+      }
+    })
+})
 
 
 // UI INTRO
@@ -70,15 +84,25 @@ const focusElementByName = ({ name }: { name: string }) => {
     }
   })
 }
+const unfocusEverything = () => {
+  layerMeshes.forEach(({ mesh, layer }) => {
+    if (!layer.src) return;
+    const material = mesh.material as THREE.ShaderMaterial;
+    brightElementByMaterial({ material, brightness: 1 });
+  })
+}
 
 const triggerClick = () => {
-  if (!intersects || !intersects[0]) return;
-  const clickedObject = pickableObjects.filter(obj => obj.name === intersects[0].object.name)[0] as THREE.Mesh;
-  setItemClicked(clickedObject.name);
-  focusElementByName({ name: clickedObject.name });
+  if (!intersects || !intersects[0]) {
+    unfocusEverything();
+  } else {
+    const clickedObject = pickableObjects.filter(obj => obj.name === intersects[0].object.name)[0] as THREE.Mesh;
+    setItemClicked(clickedObject.name);
+    focusElementByName({ name: clickedObject.name });
+  }
 }
 document.addEventListener('click', () => {
-  triggerClick();
+  canInteract && triggerClick();
 })
 
 
