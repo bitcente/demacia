@@ -1,9 +1,10 @@
-import { Group, MathUtils, Mesh, Scene, ShaderMaterial } from "three";
+import { Group, MathUtils, Mesh, Object3D, Object3DEventMap, Scene, ShaderMaterial } from "three";
 import { getLayersByScreenId } from "../layers/getLayersByScreenId";
 import { Layer, screens } from "../layers";
 import { blurIntensity, cursor, itemClicked } from "../variables/cursor";
 import { width } from "../variables/size";
 import { intersectedObject, pickableObjects } from "../variables/objects";
+import { cleanMaterial } from "../helpers/cleanMaterial";
 
 
 export class Screen {
@@ -74,6 +75,21 @@ export class Screen {
                 material.uniforms.u_blur.value = MathUtils.lerp(material.uniforms.u_blur.value, blurIntensity * layer.blurOnMovement * (layer.isBeingHovered ? 0 : 1), 0.1);
             }
         });
+    }
+
+    dispose() {
+        this._scene.traverse((object: Object3D<Object3DEventMap>) => {
+            if (!(object instanceof Mesh)) return;
+            
+            object.geometry.dispose();
+        
+            if (object.material.isMaterial) {
+                cleanMaterial(object.material);
+            } else {
+                // an array of materials
+                for (const material of object.material) cleanMaterial(material);
+            }
+        })
     }
 
     get id() {

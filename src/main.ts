@@ -20,53 +20,55 @@ export const setCurrentScreen = (newScreen: Screen) => {
 
 const id = 'invasion';
 
-const scene = new Screen({ id });
-currentScreen = scene;
-const sceneData = scene.data;
-await scene.init();
+const screen1 = new Screen({ id });
+currentScreen = screen1;
+const screen1Data = screen1.data;
+await screen1.init();
 
 // Camera
 const camera = new Camera();
 setCurrentCamera(camera);
 
 // Renderer
-export const renderer = new Renderer({ scene: scene.scene, camera });
+export const renderer = new Renderer({ scene: screen1.scene, camera });
 
-const id2 = 'petricite';
+window.addEventListener('keypress', async (e) => {
+  if (e.key === 'q') { // to test
+    const id2 = 'petricite';
 
-const scene2 = new Screen({ id: id2 });
-const sceneData2 = scene2.data;
-await scene2.init();
+    const screen2 = new Screen({ id: id2 });
+    const screen2Data = screen2.data;
+    await screen2.init();
 
-// Camera
-const camera2 = new Camera();
-
-window.addEventListener('keypress', (e) => {
-  if (e.key === 'q') // to test
-    renderer.transitionToScene({ targetScene: scene2.scene, targetCamera: camera2,
+    // Camera
+    const camera2 = new Camera();
+    renderer.transitionToScene({ targetScene: screen2.scene, targetCamera: camera2,
       onComplete: () => {
-        setCurrentScreen(scene2);
+        setCurrentScreen(screen2);
         setCanInteract(false);
         unfocusEverything();
 
         // UI intro
-        if (sceneData2) {
-          new LayerIntro({ title: sceneData2.title, description: sceneData2.description, onClose: () => setCanInteract(true) });
+        if (screen2Data) {
+          new LayerIntro({ title: screen2Data.title, description: screen2Data.description, onClose: () => setCanInteract(true) });
         }
 
         // Remove items from old scene in layerMeshes
-        if (sceneData) {
-          const idsToRemove = new Set(sceneData.layers.map(item => item.name));
+        if (screen1Data) {
+          const idsToRemove = new Set(screen1Data.layers.map(item => item.name));
           setLayerMeshes(layerMeshes.filter(item => !idsToRemove.has(item.layer.name)));
         }
+
+        screen1.dispose();
       }
     })
+  }
 })
 
 
 // UI INTRO
-if (sceneData) {
-  new LayerIntro({ title: sceneData.title, description: sceneData.description, onClose: () => setCanInteract(true) });
+if (screen1Data) {
+  new LayerIntro({ title: screen1Data.title, description: screen1Data.description, onClose: () => setCanInteract(true) });
 }
 
 // MOUSE MOVE
@@ -143,7 +145,7 @@ const adjustSceneScale = () => {
   if (screenRatio > optimalRatio) { // window too large
     scale = 1 + (screenRatio - optimalRatio) * .5;
   }
-  scene.sceneGroup.scale.set(scale,scale,1);
+  currentScreen && currentScreen.sceneGroup.scale.set(scale,scale,1);
 }
 adjustSceneScale();
 
