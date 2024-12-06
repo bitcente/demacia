@@ -50,8 +50,6 @@ export class Screen {
                     const hoverBrightness = this._layerMeshes[layerHoveredIndex].layer.hoverBrightness;
                     if (hoverBrightness) {
                         if (intersectedObject && intersectedObject.name === o.name) {
-                            console.log(o.name);
-                            
                             layerHoveredIndex && (this._layerMeshes[layerHoveredIndex].layer.isBeingHovered = true);
                             material.uniforms.u_colorFilter.value.x = MathUtils.lerp(material.uniforms.u_colorFilter.value.x, hoverBrightness, 0.1);
                             material.uniforms.u_colorFilter.value.y = MathUtils.lerp(material.uniforms.u_colorFilter.value.y, hoverBrightness, 0.1);

@@ -6,7 +6,6 @@ import { Screen } from './screens/screen';
 import './style.css';
 import { cursor, cursorDelta, setBlurIntensity, setItemClicked, unfocusEverything, updateCursorDeltaOnFrame } from './variables/cursor';
 import { canInteract, setCanInteract } from './variables/interaction';
-import { layerMeshes, setLayerMeshes } from './variables/layers';
 import { animatedObjects } from './variables/objects';
 import { height, optimalRatio, screenRatio, setHeight, setScreenRatio, setWidth, width } from './variables/size';
 
@@ -16,11 +15,9 @@ export const setCurrentScreen = (newScreen: Screen) => {
   currentScreen = newScreen;
 }
 
-const id = 'petricite';
-
-const screen1 = new Screen({ id });
+const id1 = 'petricite';
+const screen1 = new Screen({ id: id1 });
 currentScreen = screen1;
-const screen1Data = screen1.data;
 await screen1.init();
 
 // Camera
@@ -36,7 +33,6 @@ window.addEventListener('keypress', async (e) => {
     setCanInteract(false);
 
     const id2 = 'plaza';
-
     const screen2 = new Screen({ id: id2 });
     await screen2.init();
 
@@ -65,23 +61,23 @@ const clock = new THREE.Clock();
 const animate = () => {
   requestAnimationFrame(animate);
   const elapsedTime = clock.getElapsedTime(); // Time in seconds
-  
+
   animatedObjects.forEach(object => {
     const material = object.material as THREE.ShaderMaterial;
     material.uniforms.uTime.value = elapsedTime;
   });
- 
+
   if (canInteract) {
 
     // Update blur intensity based on cursor movement
     updateCursorDeltaOnFrame();
     setBlurIntensity(THREE.MathUtils.lerp(blurIntensity, cursorDelta > 0.1 ? .6 : 0, 0.1))
-  
+
     // Hover
     updateRaycaster();
-  
+
     currentScreen.render();
-    
+
     camera.rotation.z = THREE.MathUtils.lerp(camera.rotation.z, (cursor.x / width - .5)  * .01, 0.1);
 
   }

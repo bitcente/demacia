@@ -19,12 +19,12 @@ export type Layer = {
 
 export const invasionScreen: Layer[] = [
     {
-        name: 'background',
+        name: 'invasion-background',
         src: 'invasion/invasion_0.png',
         scale: 100,
         position: new THREE.Vector3(0, 0, -100000),
     },{
-        name: 'clouds',
+        name: 'invasion-clouds',
         scale: 100,
         width: 3000,
         height: 2000,
@@ -32,45 +32,45 @@ export const invasionScreen: Layer[] = [
         disableRotation: true,
         isClouds: true,
     },{
-        name: 'range',
+        name: 'invasion-range',
         src: 'invasion/invasion_1.png',
         scale: 50,
         position: new THREE.Vector3(0, 0, -50000),
     },{
-        name: 'fortress',
+        name: 'invasion-fortress',
         src: 'invasion/invasion_2.png',
         scale: 24,
         position: new THREE.Vector3(1000, 0, -30000),
     },{
-        name: 'smoke',
+        name: 'invasion-smoke',
         scale: 3.2,
         width: 3000,
         height: 2000,
         position: new THREE.Vector3(0, -1000, -2900),
         isSmoke: true,
     },{
-        name: 'right_noxians',
+        name: 'invasion-right_noxians',
         src: 'invasion/invasion_3.png',
         scale: 6,
         position: new THREE.Vector3(7000, 3500, -9000),
         blurOnMovement: 1,
         hoverBrightness: 2,
     },{
-        name: 'bust',
+        name: 'invasion-bust',
         src: 'invasion/invasion_4.png',
         scale: 3,
         position: new THREE.Vector3(2000, 1600, -3000),
         blurOnMovement: 1,
         hoverBrightness: 2,
     },{
-        name: 'charger',
+        name: 'invasion-charger',
         src: 'invasion/invasion_5.png',
         scale: 3,
         position: new THREE.Vector3(1500, 2000, -3500),
         blurOnMovement: 1,
         hoverBrightness: 2,
     },{
-        name: 'left_noxians',
+        name: 'invasion-left_noxians',
         src: 'invasion/invasion_6.png',
         scale: 4,
         position: new THREE.Vector3(-500, 2500, -5000),
@@ -81,37 +81,37 @@ export const invasionScreen: Layer[] = [
 
 export const highSilvermereScreen: Layer[] = [
     {
-        name: 'background',
+        name: 'silvermere-background',
         src: 'silvermere/silvermere_0.png',
         scale: 82,
         position: new THREE.Vector3(3000, -16000, -100000),
         disableRotation: true,
     },{
-        name: 'range',
+        name: 'silvermere-range',
         src: 'silvermere/silvermere_1.png',
         scale: 51,
         position: new THREE.Vector3(0, 0, -60000),
         disableRotation: true,
     },{
-        name: 'range_2',
+        name: 'silvermere-range_2',
         src: 'silvermere/silvermere_2.png',
         scale: 24,
         position: new THREE.Vector3(11000, 0, -30000),
         disableRotation: true,
     },{
-        name: 'water',
+        name: 'silvermere-water',
         src: 'silvermere/silvermere_3.png',
         scale: 18,
         position: new THREE.Vector3(-1000, 5000, -25000),
         disableRotation: true,
     },{
-        name: 'right_mountain',
+        name: 'silvermere-right_mountain',
         src: 'silvermere/silvermere_4.png',
         scale: 14,
         position: new THREE.Vector3(9000, 3000, -20000),
         disableRotation: true,
     },{
-        name: 'back-clouds',
+        name: 'silvermere-back-clouds',
         src: 'silvermere/silvermere_4.png',
         scale: 12,
         width: 3000,
@@ -120,13 +120,13 @@ export const highSilvermereScreen: Layer[] = [
         disableRotation: true,
         isClouds: true,
     },{
-        name: 'silvermere',
+        name: 'silvermere-silvermere',
         src: 'silvermere/silvermere_5.png',
         scale: 8,
         position: new THREE.Vector3(-1000, 1000, -10000),
         disableRotation: true,
     },{
-        name: 'front-clouds',
+        name: 'silvermere-front-clouds',
         scale: 8,
         width: 3000,
         height: 2000,
@@ -135,7 +135,7 @@ export const highSilvermereScreen: Layer[] = [
         isClouds: true,
         noiseScale: 50,
     },{
-        name: 'forest',
+        name: 'silvermere-forest',
         src: 'silvermere/silvermere_6.png',
         scale: 3,
         position: new THREE.Vector3(0, 1900, -4000),
@@ -145,13 +145,13 @@ export const highSilvermereScreen: Layer[] = [
 
 export const petricitePillarScreen: Layer[] = [
     {
-        name: 'landscape',
+        name: 'petricite-landscape',
         src: 'petricite_pillar/petricite_pillar_0.png',
         scale: 50,
         position: new THREE.Vector3(10000, -16000, -100000),
         disableRotation: true,
     },{
-        name: 'smoke',
+        name: 'petricite-smoke',
         width: 3000,
         height: 2000,
         scale: 50,
@@ -159,33 +159,33 @@ export const petricitePillarScreen: Layer[] = [
         disableRotation: true,
         isSmoke: true,
     },{
-        name: 'building',
+        name: 'petricite-building',
         src: 'petricite_pillar/petricite_pillar_1.png',
         scale: 30,
         position: new THREE.Vector3(-40000, -11000, -50000),
         disableRotation: true,
         blurOnMovement: .05,
     },{
-        name: 'jail',
+        name: 'petricite-jail',
         src: 'petricite_pillar/petricite_pillar_2.png',
         scale: 20,
         position: new THREE.Vector3(25000, -5000, -40000),
         blurOnMovement: .3,
     },{
-        name: 'pillar',
+        name: 'petricite-pillar',
         src: 'petricite_pillar/petricite_pillar_3.png',
         scale: 20,
         position: new THREE.Vector3(17000, 4000, -70000),
         hoverBrightness: 1.5,
     },{
-        name: 'arrest',
+        name: 'petricite-arrest',
         src: 'petricite_pillar/petricite_pillar_4.png',
         scale: 14,
         position: new THREE.Vector3(8000, 12000, -45000),
         blurOnMovement: .5,
         hoverBrightness: 1.5,
     },{
-        name: 'mageseeker',
+        name: 'petricite-mageseeker',
         src: 'petricite_pillar/petricite_pillar_5.png',
         scale: 3,
         position: new THREE.Vector3(-2000, 2000, -10000),
@@ -197,13 +197,13 @@ export const petricitePillarScreen: Layer[] = [
 
 export const plazaScreen: Layer[] = [
     {
-        name: 'landscape',
+        name: 'plaza-landscape',
         src: 'plaza/plaza_0.png',
         scale: 65,
         position: new THREE.Vector3(0, 0, -100000),
         disableRotation: true,
     },{
-        name: 'clouds',
+        name: 'plaza-clouds',
         width: 3000,
         height: 2000,
         scale: 50,
@@ -211,13 +211,13 @@ export const plazaScreen: Layer[] = [
         disableRotation: true,
         isClouds: true,
     },{
-        name: 'plaza',
+        name: 'plaza-plaza',
         src: 'plaza/plaza_1.png',
         scale: 35,
         position: new THREE.Vector3(0, 1000, -50000),
         disableRotation: true,
     },{
-        name: 'tianna',
+        name: 'plaza-tianna',
         src: 'plaza/plaza_2.png',
         scale: 6,
         position: new THREE.Vector3(-2000, 2000, -10000),

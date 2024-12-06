@@ -43,11 +43,11 @@ export const focusElementByName = ({ name }: { name: string }) => {
         if (!layer.src) return;
         const material = mesh.material as ShaderMaterial;
         if (mesh.name === name) {
-            brightElementByMaterial({ material, brightness: 1.5 });
+            brightElementByMaterial({ material, brightness: layer.hoverBrightness });
         } else {
             brightElementByMaterial({ material, brightness: .5 });
         }
-    })
+    });
 }
 export const unfocusEverything = () => {
     layerMeshes.forEach(({ mesh, layer }) => {
@@ -63,7 +63,6 @@ export const triggerClick = () => {
         setItemClicked();
     } else {
         const clickedObject = pickableObjects.filter(obj => obj.name === intersects[0].object.name)[0] as Mesh;
-        console.log(clickedObject.name);
         setItemClicked(clickedObject.name);
         focusElementByName({ name: clickedObject.name });
     }
